@@ -27,8 +27,9 @@ function IssueDisplay({
       );
     };
 
+    rawHtml = marked.parse(rawHtml, { async: false });
     let sanitized = DOMPurify.sanitize(escapeScriptElements(rawHtml));
-    return parseHtmlToReact(marked.parse(sanitized, { async: false }));
+    return parseHtmlToReact(sanitized);
   };
 
   return (
