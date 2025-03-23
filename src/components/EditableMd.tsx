@@ -10,12 +10,14 @@ import { useState } from "react";
 import { LuCheck, LuX } from "react-icons/lu";
 import DOMPurify from "dompurify";
 import parseHtmlToReact from "html-react-parser";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface EditableMdProps {
   content: string;
+  register?: UseFormRegisterReturn<string>;
 }
 
-const EditableMd = ({ content }: EditableMdProps) => {
+const EditableMd = ({ content, register }: EditableMdProps) => {
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(content);
 
@@ -45,17 +47,21 @@ const EditableMd = ({ content }: EditableMdProps) => {
     if (event.key == "Escape") stopEditing();
   };
 
-  if (!isEditing)
-    return (
+  const CustomPreview = () => {
+    return isEditing ? (
+      <Editable.Preview h="sm" />
+    ) : (
       <Box
         className="markdown"
         onClick={startEditing}
         h="sm"
+        w="100%"
         border="2px solid black"
       >
         {parseMdToJsx(description)}
       </Box>
     );
+  };
 
   return (
     <Editable.Root
@@ -63,10 +69,10 @@ const EditableMd = ({ content }: EditableMdProps) => {
       onValueCommit={saveAndStopEditing}
       onFocusOutside={stopEditing}
       onKeyDown={stopEditingOnEscape}
-      defaultEdit={true}
+      defaultEdit={isEditing}
     >
-      <Editable.Preview h="sm" w="100%" />
-      <Editable.Textarea h="sm" />
+      <CustomPreview />
+      <Editable.Textarea {...register} h="sm" />
       <Editable.Control>
         <Editable.CancelTrigger asChild onClick={stopEditing}>
           <IconButton variant="outline" size="sm">
