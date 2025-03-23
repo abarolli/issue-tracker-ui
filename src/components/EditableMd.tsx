@@ -11,11 +11,11 @@ import { LuCheck, LuX } from "react-icons/lu";
 import DOMPurify from "dompurify";
 import parseHtmlToReact from "html-react-parser";
 
-interface EditableMdDescriptionProps {
+interface EditableMdProps {
   content: string;
 }
 
-const EditableMdDescription = ({ content }: EditableMdDescriptionProps) => {
+const EditableMd = ({ content }: EditableMdProps) => {
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(content);
 
@@ -83,4 +83,4 @@ const EditableMdDescription = ({ content }: EditableMdDescriptionProps) => {
   );
 };
 
-export default EditableMdDescription;
+export default EditableMd;
