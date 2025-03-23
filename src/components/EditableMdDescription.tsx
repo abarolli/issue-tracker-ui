@@ -39,7 +39,7 @@ const EditableMdDescription = ({ content }: EditableMdDescriptionProps) => {
     stopEditing();
   };
 
-  const stopEditingOnEscape: React.KeyboardEventHandler<HTMLTextAreaElement> = (
+  const stopEditingOnEscape: React.KeyboardEventHandler<HTMLDivElement> = (
     event
   ) => {
     if (event.key == "Escape") stopEditing();
@@ -47,7 +47,12 @@ const EditableMdDescription = ({ content }: EditableMdDescriptionProps) => {
 
   if (!isEditing)
     return (
-      <Box className="markdown" onClick={startEditing} border="2px solid black">
+      <Box
+        className="markdown"
+        onClick={startEditing}
+        h="sm"
+        border="2px solid black"
+      >
         {parseMdToJsx(description)}
       </Box>
     );
@@ -57,9 +62,11 @@ const EditableMdDescription = ({ content }: EditableMdDescriptionProps) => {
       defaultValue={description}
       onValueCommit={saveAndStopEditing}
       onFocusOutside={stopEditing}
+      onKeyDown={stopEditingOnEscape}
+      defaultEdit={true}
     >
-      <Editable.Preview h="sm" />
-      <Editable.Textarea h="sm" onKeyDown={stopEditingOnEscape} />
+      <Editable.Preview h="sm" w="100%" />
+      <Editable.Textarea h="sm" />
       <Editable.Control>
         <Editable.CancelTrigger asChild onClick={stopEditing}>
           <IconButton variant="outline" size="sm">
