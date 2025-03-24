@@ -7,6 +7,7 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
+
 import {
   FieldValues,
   SubmitHandler,
@@ -55,6 +56,7 @@ function EditableIssueDisplay({
   const submitHandler: SubmitHandler<FieldValues> = (data: FieldValues) => {
     console.log(data);
   };
+
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <SimpleEditable
@@ -62,34 +64,44 @@ function EditableIssueDisplay({
         content={title}
         fontSize="lg"
       />
-      <Text>Description</Text>
-      <EditableMd
-        register={register("description")}
-        height="sm"
-        width="md"
-        content={description}
-      />
-      <Flex>
-        <Box w="3xs">
-          <SimpleSelectable
-            label="Status"
-            name="status"
-            defaultValue={status}
-            collection={statusItems}
-            control={control}
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        md={{ flexDirection: "row", justifyContent: "center" }}
+      >
+        <Box mb="1.3rem" md={{ mr: "1.3rem" }}>
+          <Text mb=".2rem" fontWeight="500">
+            Description
+          </Text>
+          <EditableMd
+            register={register("description")}
+            height="sm"
+            width={{ base: "md", lg: "xl", xl: "2xl" }}
+            content={description}
           />
         </Box>
-        <Box w="3xs">
-          <SimpleSelectable
-            label="Priority"
-            name="priority"
-            defaultValue={priority}
-            collection={priorityItems}
-            control={control}
-          />
+        <Box className="issue-display_control">
+          <Box w="3xs">
+            <SimpleSelectable
+              label="Status"
+              name="status"
+              defaultValue={status}
+              collection={statusItems}
+              control={control}
+            />
+          </Box>
+          <Box w="3xs">
+            <SimpleSelectable
+              label="Priority"
+              name="priority"
+              defaultValue={priority}
+              collection={priorityItems}
+              control={control}
+            />
+          </Box>
+          <Button type="submit">Submit</Button>
         </Box>
       </Flex>
-      <Button type="submit">Submit</Button>
     </form>
   );
 }
