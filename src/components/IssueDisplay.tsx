@@ -22,11 +22,11 @@ import { useNavigate } from "react-router-dom";
 import ROUTES from "../configs/routes";
 
 interface IssueDisplayProps {
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-  assignees: string[];
+  title?: string;
+  description?: string;
+  status?: string;
+  priority?: string;
+  assignees?: string[];
 }
 
 function EditableIssueDisplay({
@@ -73,6 +73,8 @@ function EditableIssueDisplay({
       });
   };
 
+  const DEFAULT_STATUS = "OPEN",
+    DEFAULT_PRIORITY = "LOW";
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
       <Box maxW="1200px">
@@ -80,7 +82,7 @@ function EditableIssueDisplay({
           <Text>Title</Text>
           <SimpleEditable
             register={register("title")}
-            content={title}
+            content={title || ""}
             fontSize="lg"
             previewClassName="issue-display_title"
           />
@@ -96,6 +98,7 @@ function EditableIssueDisplay({
               Description
             </Text>
             <EditableMd
+              disable={true}
               register={register("description")}
               height="sm"
               width={{
@@ -105,7 +108,7 @@ function EditableIssueDisplay({
                 lg: "xl",
                 xl: "2xl",
               }}
-              content={description}
+              content={description || ""}
             />
           </Box>
           <Box
@@ -115,14 +118,14 @@ function EditableIssueDisplay({
             <SimpleSelectable
               label="Status"
               name="status"
-              defaultValue={status}
+              defaultValue={status || DEFAULT_STATUS}
               collection={statusItems}
               control={control}
             />
             <SimpleSelectable
               label="Priority"
               name="priority"
-              defaultValue={priority}
+              defaultValue={priority || DEFAULT_PRIORITY}
               collection={priorityItems}
               control={control}
             />
