@@ -1,9 +1,11 @@
 import {
   Box,
+  ConditionalValue,
   Editable,
   EditableValueChangeDetails,
   IconButton,
 } from "@chakra-ui/react";
+
 import he from "he";
 import { marked } from "marked";
 import { useState } from "react";
@@ -14,8 +16,8 @@ import { UseFormRegisterReturn } from "react-hook-form";
 
 interface EditableMdProps {
   content: string;
-  height: string;
-  width: string;
+  height: ConditionalValue<string>;
+  width: ConditionalValue<string>;
   register?: UseFormRegisterReturn<string>;
 }
 
