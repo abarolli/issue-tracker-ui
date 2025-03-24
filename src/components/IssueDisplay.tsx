@@ -61,10 +61,12 @@ function EditableIssueDisplay({
     <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
       <Box maxW="1200px">
         <Box mb="2rem">
+          <Text>Title</Text>
           <SimpleEditable
             register={register("title")}
             content={title}
             fontSize="lg"
+            previewClassName="issue-display_title"
           />
         </Box>
         <Flex
@@ -80,29 +82,34 @@ function EditableIssueDisplay({
             <EditableMd
               register={register("description")}
               height="sm"
-              width={{ sm: "md", largeSmall: "lg", lg: "xl", xl: "2xl" }}
+              width={{
+                base: "sm",
+                sm: "md",
+                largeSmall: "lg",
+                lg: "xl",
+                xl: "2xl",
+              }}
               content={description}
             />
           </Box>
-          <Box className="issue-display_control">
-            <Box w="3xs">
-              <SimpleSelectable
-                label="Status"
-                name="status"
-                defaultValue={status}
-                collection={statusItems}
-                control={control}
-              />
-            </Box>
-            <Box w="3xs">
-              <SimpleSelectable
-                label="Priority"
-                name="priority"
-                defaultValue={priority}
-                collection={priorityItems}
-                control={control}
-              />
-            </Box>
+          <Box
+            w={{ base: "100%", md: "200px" }}
+            className="issue-display_control"
+          >
+            <SimpleSelectable
+              label="Status"
+              name="status"
+              defaultValue={status}
+              collection={statusItems}
+              control={control}
+            />
+            <SimpleSelectable
+              label="Priority"
+              name="priority"
+              defaultValue={priority}
+              collection={priorityItems}
+              control={control}
+            />
             <Button type="submit">Submit</Button>
           </Box>
         </Flex>

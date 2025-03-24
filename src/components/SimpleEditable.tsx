@@ -8,12 +8,22 @@ interface SimpleEditableProps {
   content: string;
   fontSize?: string;
   register?: UseFormRegisterReturn<string>;
+  previewClassName?: string;
 }
 
-function SimpleEditable({ content, fontSize, register }: SimpleEditableProps) {
+function SimpleEditable({
+  content,
+  fontSize,
+  register,
+  previewClassName,
+}: SimpleEditableProps) {
   return (
     <Editable.Root defaultValue={content}>
-      <Editable.Preview w="100%" fontSize={fontSize || "lg"} />
+      <Editable.Preview
+        w="100%"
+        fontSize={fontSize || "lg"}
+        className={previewClassName}
+      />
       <Editable.Input {...register} w="100%" fontSize={fontSize || "lg"} />
       <Editable.Control>
         <Editable.CancelTrigger asChild>
