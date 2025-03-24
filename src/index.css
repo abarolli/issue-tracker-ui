@@ -43,3 +43,12 @@
   color: blue;
   text-decoration: underline;
 }
+
+.issue-display_control {
+  display: flex;
+  flex-direction: column;
+}
+
+.issue-display_control > * {
+  margin-bottom: 1.3rem;
+}
