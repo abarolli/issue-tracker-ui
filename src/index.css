@@ -1,3 +1,16 @@
+.markdown {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.markdown * {
+  margin-bottom: 1rem;
+}
+
+.markdown *:last-child {
+  margin-bottom: 0;
+}
+
 .markdown em {
   font-style: italic;
 }
@@ -24,4 +37,9 @@
 .markdown h4 {
   font-weight: bold;
   font-size: 1.2rem;
+}
+
+.markdown a {
+  color: blue;
+  text-decoration: underline;
 }
