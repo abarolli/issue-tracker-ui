@@ -63,7 +63,12 @@ function EditableIssueDisplay({
         fontSize="lg"
       />
       <Text>Description</Text>
-      <EditableMd register={register("description")} content={description} />
+      <EditableMd
+        register={register("description")}
+        height="sm"
+        width="md"
+        content={description}
+      />
       <Flex>
         <Box w="3xs">
           <SimpleSelectable
