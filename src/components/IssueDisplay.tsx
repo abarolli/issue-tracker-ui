@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
-import he from "he";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
-import parseHtmlToReact from "html-react-parser";
+import {
+  Box,
+  Button,
+  createListCollection,
+  Flex,
+  Text,
+} from "@chakra-ui/react";
+import {
+  FieldValues,
+  SubmitHandler,
+  useForm,
+  UseFormReturn,
+} from "react-hook-form";
+import EditableMd from "./EditableMd";
+import SimpleSelectable, { SelectableItem } from "./SimpleSelectable";
+import SimpleEditable from "./SimpleEditable";
 
 interface IssueDisplayProps {
   title: string;
@@ -13,38 +25,68 @@ interface IssueDisplayProps {
   assignees: string[];
 }
 
-function IssueDisplay({
+function EditableIssueDisplay({
   title,
   description,
   status,
   priority,
   assignees,
 }: IssueDisplayProps) {
-  const parseMdToJsx = (rawHtml: string) => {
-    const escapeScriptElements = (rawHtml: string) => {
-      return rawHtml.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, (match) =>
-        he.escape(match)
-      );
-    };
+  var priorityItems = createListCollection<SelectableItem>({
+    items: [
+      { label: "LOW", value: "LOW" },
+      { label: "MEDIUM", value: "MEDIUM" },
+      { label: "HIGH", value: "HIGH" },
+      { label: "CRITICAL", value: "CRITICAL" },
+    ],
+  });
 
-    rawHtml = marked.parse(rawHtml, { async: false });
-    let sanitized = DOMPurify.sanitize(escapeScriptElements(rawHtml));
-    return parseHtmlToReact(sanitized);
+  var statusItems = createListCollection<SelectableItem>({
+    items: [
+      { label: "OPEN", value: "OPEN" },
+      { label: "IN PROGRESS", value: "IN_PROGRESS" },
+      { label: "RESOLVED", value: "RESOLVED" },
+      { label: "CLOSED", value: "CLOSED" },
+    ],
+  });
+
+  const { register, handleSubmit, control }: UseFormReturn = useForm();
+
+  const submitHandler: SubmitHandler<FieldValues> = (data: FieldValues) => {
+    console.log(data);
   };
-
   return (
-    <>
-      <h1>{title}</h1>
-      <p>Description</p>
-      {parseMdToJsx(description)}
-      <p>Status</p>
-      <p>{status}</p>
-      <p>Priority</p>
-      <p>{priority}</p>
-      <p>Assignees</p>
-      <p>{assignees}</p>
-    </>
+    <form onSubmit={handleSubmit(submitHandler)}>
+      <SimpleEditable
+        register={register("title")}
+        content={title}
+        fontSize="lg"
+      />
+      <Text>Description</Text>
+      <EditableMd register={register("description")} content={description} />
+      <Flex>
+        <Box w="3xs">
+          <SimpleSelectable
+            label="Status"
+            name="status"
+            defaultValue={status}
+            collection={statusItems}
+            control={control}
+          />
+        </Box>
+        <Box w="3xs">
+          <SimpleSelectable
+            label="Priority"
+            name="priority"
+            defaultValue={priority}
+            collection={priorityItems}
+            control={control}
+          />
+        </Box>
+      </Flex>
+      <Button type="submit">Submit</Button>
+    </form>
   );
 }
 
-export default IssueDisplay;
+export default EditableIssueDisplay;
