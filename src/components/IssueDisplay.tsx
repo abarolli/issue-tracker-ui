@@ -67,7 +67,8 @@ function EditableIssueDisplay({
       <Flex
         flexDirection="column"
         alignItems="center"
-        md={{ flexDirection: "row", justifyContent: "center" }}
+        justifyContent="center"
+        md={{ flexDirection: "row" }}
       >
         <Box mb="1.3rem" md={{ mr: "1.3rem" }}>
           <Text mb=".2rem" fontWeight="500">
