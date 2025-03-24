@@ -44,6 +44,13 @@
   text-decoration: underline;
 }
 
+.issue-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
 .issue-display_control {
   display: flex;
   flex-direction: column;

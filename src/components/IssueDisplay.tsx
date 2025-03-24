@@ -58,51 +58,55 @@ function EditableIssueDisplay({
   };
 
   return (
-    <form onSubmit={handleSubmit(submitHandler)}>
-      <SimpleEditable
-        register={register("title")}
-        content={title}
-        fontSize="lg"
-      />
-      <Flex
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        md={{ flexDirection: "row" }}
-      >
-        <Box mb="1.3rem" md={{ mr: "1.3rem" }}>
-          <Text mb=".2rem" fontWeight="500">
-            Description
-          </Text>
-          <EditableMd
-            register={register("description")}
-            height="sm"
-            width={{ base: "md", lg: "xl", xl: "2xl" }}
-            content={description}
+    <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
+      <Box maxW="1200px">
+        <Box mb="2rem">
+          <SimpleEditable
+            register={register("title")}
+            content={title}
+            fontSize="lg"
           />
         </Box>
-        <Box className="issue-display_control">
-          <Box w="3xs">
-            <SimpleSelectable
-              label="Status"
-              name="status"
-              defaultValue={status}
-              collection={statusItems}
-              control={control}
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          md={{ flexDirection: "row", alignItems: "start" }}
+        >
+          <Box mb="1.3rem" md={{ mr: "1.3rem" }}>
+            <Text fontWeight="500" lineHeight="1.25rem" mb=".375rem">
+              Description
+            </Text>
+            <EditableMd
+              register={register("description")}
+              height="sm"
+              width={{ base: "md", lg: "xl", xl: "2xl" }}
+              content={description}
             />
           </Box>
-          <Box w="3xs">
-            <SimpleSelectable
-              label="Priority"
-              name="priority"
-              defaultValue={priority}
-              collection={priorityItems}
-              control={control}
-            />
+          <Box className="issue-display_control">
+            <Box w="3xs">
+              <SimpleSelectable
+                label="Status"
+                name="status"
+                defaultValue={status}
+                collection={statusItems}
+                control={control}
+              />
+            </Box>
+            <Box w="3xs">
+              <SimpleSelectable
+                label="Priority"
+                name="priority"
+                defaultValue={priority}
+                collection={priorityItems}
+                control={control}
+              />
+            </Box>
+            <Button type="submit">Submit</Button>
           </Box>
-          <Button type="submit">Submit</Button>
-        </Box>
-      </Flex>
+        </Flex>
+      </Box>
     </form>
   );
 }
