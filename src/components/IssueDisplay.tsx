@@ -17,6 +17,9 @@ import {
 import EditableMd from "./EditableMd";
 import SimpleSelectable, { SelectableItem } from "./SimpleSelectable";
 import SimpleEditable from "./SimpleEditable";
+import apiClient from "../services/api-client";
+import { useNavigate } from "react-router-dom";
+import ROUTES from "../configs/routes";
 
 interface IssueDisplayProps {
   title: string;
@@ -33,6 +36,8 @@ function EditableIssueDisplay({
   priority,
   assignees,
 }: IssueDisplayProps) {
+  const navigate = useNavigate();
+
   var priorityItems = createListCollection<SelectableItem>({
     items: [
       { label: "LOW", value: "LOW" },
@@ -54,7 +59,18 @@ function EditableIssueDisplay({
   const { register, handleSubmit, control }: UseFormReturn = useForm();
 
   const submitHandler: SubmitHandler<FieldValues> = (data: FieldValues) => {
-    console.log(data);
+    apiClient
+      .post(
+        "/issues",
+        { ...data, assignees: assignees || [] },
+        {
+          headers: { Authorization: "Bearer " + sessionStorage.getItem("jwt") },
+        }
+      )
+      .then(({ data }) => console.log(data))
+      .catch(({ status }) => {
+        if (status === 403) navigate(ROUTES.LOGIN);
+      });
   };
 
   return (
