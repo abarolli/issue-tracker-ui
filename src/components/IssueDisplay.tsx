@@ -80,7 +80,7 @@ function EditableIssueDisplay({
             <EditableMd
               register={register("description")}
               height="sm"
-              width={{ base: "md", lg: "xl", xl: "2xl" }}
+              width={{ sm: "md", largeSmall: "lg", lg: "xl", xl: "2xl" }}
               content={description}
             />
           </Box>
