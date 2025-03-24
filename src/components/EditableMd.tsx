@@ -14,10 +14,12 @@ import { UseFormRegisterReturn } from "react-hook-form";
 
 interface EditableMdProps {
   content: string;
+  height: string;
+  width: string;
   register?: UseFormRegisterReturn<string>;
 }
 
-const EditableMd = ({ content, register }: EditableMdProps) => {
+const EditableMd = ({ content, height, width, register }: EditableMdProps) => {
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(content);
 
@@ -49,13 +51,13 @@ const EditableMd = ({ content, register }: EditableMdProps) => {
 
   const CustomPreview = () => {
     return isEditing ? (
-      <Editable.Preview h="sm" />
+      <Editable.Preview minH={height} width={width} />
     ) : (
       <Box
         className="markdown"
         onClick={startEditing}
-        h="sm"
-        w="100%"
+        h={height}
+        w={width}
         border="2px solid black"
       >
         {parseMdToJsx(description)}
@@ -70,9 +72,12 @@ const EditableMd = ({ content, register }: EditableMdProps) => {
       onFocusOutside={stopEditing}
       onKeyDown={stopEditingOnEscape}
       defaultEdit={isEditing}
+      flex={1}
+      w={width}
+      flexDirection="column"
     >
       <CustomPreview />
-      <Editable.Textarea {...register} h="sm" />
+      <Editable.Textarea {...register} minH={height} width={width} />
       <Editable.Control>
         <Editable.CancelTrigger asChild onClick={stopEditing}>
           <IconButton variant="outline" size="sm">
