@@ -11,6 +11,7 @@ interface SimpleSelectableProps {
   collection: ListCollection<SelectableItem>;
   placeholder?: string;
   defaultValue?: string;
+  disable?: boolean;
   control?: Control<FieldValues>;
 }
 
@@ -20,6 +21,7 @@ function SimpleSelectable({
   collection,
   placeholder,
   defaultValue,
+  disable,
   control,
 }: SimpleSelectableProps) {
   return (
@@ -32,6 +34,7 @@ function SimpleSelectable({
         render={({ field }) => (
           <Select.Root
             name={field.name}
+            disabled={disable ?? false}
             onValueChange={({ value }) => field.onChange(value[0])}
             defaultValue={[field.value]}
             collection={collection}
