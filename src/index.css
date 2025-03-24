@@ -59,3 +59,8 @@
 .issue-display_control > * {
   margin-bottom: 1.3rem;
 }
+
+.issue-display_title {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0 1rem;
+}
