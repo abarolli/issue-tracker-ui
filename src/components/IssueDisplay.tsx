@@ -27,6 +27,7 @@ interface IssueDisplayProps {
   status?: string;
   priority?: string;
   assignees?: string[];
+  disable?: boolean;
 }
 
 function EditableIssueDisplay({
@@ -35,6 +36,7 @@ function EditableIssueDisplay({
   status,
   priority,
   assignees,
+  disable,
 }: IssueDisplayProps) {
   const navigate = useNavigate();
 
@@ -75,14 +77,21 @@ function EditableIssueDisplay({
 
   const DEFAULT_STATUS = "OPEN",
     DEFAULT_PRIORITY = "LOW";
+  title ??= "";
+  description ??= "";
+  status ??= DEFAULT_STATUS;
+  priority ??= DEFAULT_PRIORITY;
+  disable ??= false;
+
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
       <Box maxW="1200px">
         <Box mb="2rem">
           <Text>Title</Text>
           <SimpleEditable
+            disable={disable}
             register={register("title")}
-            content={title || ""}
+            content={title}
             fontSize="lg"
             previewClassName="issue-display_title"
           />
@@ -98,7 +107,7 @@ function EditableIssueDisplay({
               Description
             </Text>
             <EditableMd
-              disable={true}
+              disable={disable}
               register={register("description")}
               height="sm"
               width={{
@@ -108,7 +117,7 @@ function EditableIssueDisplay({
                 lg: "xl",
                 xl: "2xl",
               }}
-              content={description || ""}
+              content={description}
             />
           </Box>
           <Box
@@ -116,16 +125,18 @@ function EditableIssueDisplay({
             className="issue-display_control"
           >
             <SimpleSelectable
+              disable={disable}
               label="Status"
               name="status"
-              defaultValue={status || DEFAULT_STATUS}
+              defaultValue={status}
               collection={statusItems}
               control={control}
             />
             <SimpleSelectable
+              disable={disable}
               label="Priority"
               name="priority"
-              defaultValue={priority || DEFAULT_PRIORITY}
+              defaultValue={priority}
               collection={priorityItems}
               control={control}
             />
