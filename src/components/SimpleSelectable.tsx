@@ -24,6 +24,8 @@ function SimpleSelectable({
   disable,
   control,
 }: SimpleSelectableProps) {
+  disable ??= false;
+
   return (
     <Field.Root>
       <Field.Label>{label}</Field.Label>
@@ -34,7 +36,7 @@ function SimpleSelectable({
         render={({ field }) => (
           <Select.Root
             name={field.name}
-            disabled={disable ?? false}
+            disabled={disable}
             onValueChange={({ value }) => field.onChange(value[0])}
             defaultValue={[field.value]}
             collection={collection}
