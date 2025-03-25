@@ -83,13 +83,15 @@ function EditableIssueDisplay({
   priority ??= DEFAULT_PRIORITY;
   disable ??= false;
 
+  const [isDisabled, setDisabled] = useState(disable);
+
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
       <Box maxW="1200px">
         <Box mb="2rem">
           <Text>Title</Text>
           <SimpleEditable
-            disable={disable}
+            disable={isDisabled}
             register={register("title")}
             content={title}
             fontSize="lg"
@@ -107,7 +109,7 @@ function EditableIssueDisplay({
               Description
             </Text>
             <EditableMd
-              disable={disable}
+              disable={isDisabled}
               register={register("description")}
               height="sm"
               width={{
@@ -125,7 +127,7 @@ function EditableIssueDisplay({
             className="issue-display_control"
           >
             <SimpleSelectable
-              disable={disable}
+              disable={isDisabled}
               label="Status"
               name="status"
               defaultValue={status}
@@ -133,14 +135,20 @@ function EditableIssueDisplay({
               control={control}
             />
             <SimpleSelectable
-              disable={disable}
+              disable={isDisabled}
               label="Priority"
               name="priority"
               defaultValue={priority}
               collection={priorityItems}
               control={control}
             />
-            <Button type="submit">Submit</Button>
+            <Button disabled={!isDisabled} onClick={() => setDisabled(false)}>
+              Edit
+            </Button>
+            {!isDisabled && (
+              <Button onClick={() => setDisabled(true)}>Cancel</Button>
+            )}
+            {!isDisabled && <Button type="submit">Save</Button>}
           </Box>
         </Flex>
       </Box>
