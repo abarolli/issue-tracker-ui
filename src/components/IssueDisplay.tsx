@@ -70,8 +70,13 @@ function EditableIssueDisplay({
 
   const [isDisabled, setDisabled] = useState(disable);
 
+  const submitHandler: SubmitHandler<FieldValues> = (data: FieldValues) => {
+    setDisabled(true);
+    onSubmit(data);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="issue-display">
+    <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
       <Box maxW="1200px">
         <Box mb="2rem">
           <Text>Title</Text>
@@ -152,7 +157,9 @@ export function CreateIssueForm() {
           headers: { Authorization: "Bearer " + sessionStorage.getItem("jwt") },
         }
       )
-      .then(({ data }) => console.log(data))
+      .then(({ data }) => {
+        navigate(ROUTES.ISSUE(data.id));
+      })
       .catch(({ status }) => {
         if (status === 403) navigate(ROUTES.LOGIN);
       });
