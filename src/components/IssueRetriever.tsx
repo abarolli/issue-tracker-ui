@@ -3,6 +3,7 @@ import apiClient from "../services/api-client";
 import EditableIssueDisplay from "./IssueDisplay";
 import { useNavigate, useParams } from "react-router-dom";
 import ROUTES from "../configs/routes";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 
 function IssueRetriever() {
   const { id } = useParams();
@@ -22,6 +23,21 @@ function IssueRetriever() {
       });
   }, []);
 
+  const updateIssue: SubmitHandler<FieldValues> = (data: FieldValues) => {
+    apiClient
+      .patch(
+        `/issues/${id}`,
+        { ...data, assignees: [] },
+        {
+          headers: { Authorization: "Bearer " + sessionStorage.getItem("jwt") },
+        }
+      )
+      .then(({ data }) => console.log(data))
+      .catch(({ status }) => {
+        if (status === 403) navigate(ROUTES.LOGIN);
+      });
+  };
+
   return issue ? (
     <EditableIssueDisplay
       disable={true}
@@ -29,6 +45,7 @@ function IssueRetriever() {
       description={issue["description"]}
       status={issue["status"]}
       priority={issue["priority"]}
+      onSubmit={updateIssue}
     />
   ) : null;
 }
