@@ -6,6 +6,7 @@ import { UseFormRegisterReturn } from "react-hook-form";
 
 interface SimpleEditableProps {
   content: string;
+  disable?: boolean;
   fontSize?: string;
   register?: UseFormRegisterReturn<string>;
   previewClassName?: string;
@@ -13,12 +14,13 @@ interface SimpleEditableProps {
 
 function SimpleEditable({
   content,
+  disable,
   fontSize,
   register,
   previewClassName,
 }: SimpleEditableProps) {
   return (
-    <Editable.Root defaultValue={content}>
+    <Editable.Root disabled={disable ?? false} defaultValue={content}>
       <Editable.Preview
         w="100%"
         fontSize={fontSize || "lg"}

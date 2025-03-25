@@ -17,13 +17,19 @@ import {
 import EditableMd from "./EditableMd";
 import SimpleSelectable, { SelectableItem } from "./SimpleSelectable";
 import SimpleEditable from "./SimpleEditable";
+import { useNavigate } from "react-router-dom";
+import ROUTES from "../configs/routes";
+import issueService from "../services/issue-service";
+import { HttpStatusCode } from "axios";
 
 interface IssueDisplayProps {
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-  assignees: string[];
+  title?: string;
+  description?: string;
+  status?: string;
+  priority?: string;
+  assignees?: string[];
+  disable?: boolean;
+  onSubmit: SubmitHandler<FieldValues>;
 }
 
 function EditableIssueDisplay({
@@ -32,6 +38,8 @@ function EditableIssueDisplay({
   status,
   priority,
   assignees,
+  disable,
+  onSubmit,
 }: IssueDisplayProps) {
   var priorityItems = createListCollection<SelectableItem>({
     items: [
@@ -53,8 +61,19 @@ function EditableIssueDisplay({
 
   const { register, handleSubmit, control }: UseFormReturn = useForm();
 
+  const DEFAULT_STATUS = "OPEN",
+    DEFAULT_PRIORITY = "LOW";
+  title ??= "";
+  description ??= "";
+  status ??= DEFAULT_STATUS;
+  priority ??= DEFAULT_PRIORITY;
+  disable ??= false;
+
+  const [isDisabled, setDisabled] = useState(disable);
+
   const submitHandler: SubmitHandler<FieldValues> = (data: FieldValues) => {
-    console.log(data);
+    setDisabled(true);
+    onSubmit(data);
   };
 
   return (
@@ -63,6 +82,7 @@ function EditableIssueDisplay({
         <Box mb="2rem">
           <Text>Title</Text>
           <SimpleEditable
+            disable={isDisabled}
             register={register("title")}
             content={title}
             fontSize="lg"
@@ -80,6 +100,7 @@ function EditableIssueDisplay({
               Description
             </Text>
             <EditableMd
+              disable={isDisabled}
               register={register("description")}
               height="sm"
               width={{
@@ -97,6 +118,7 @@ function EditableIssueDisplay({
             className="issue-display_control"
           >
             <SimpleSelectable
+              disable={isDisabled}
               label="Status"
               name="status"
               defaultValue={status}
@@ -104,18 +126,45 @@ function EditableIssueDisplay({
               control={control}
             />
             <SimpleSelectable
+              disable={isDisabled}
               label="Priority"
               name="priority"
               defaultValue={priority}
               collection={priorityItems}
               control={control}
             />
-            <Button type="submit">Submit</Button>
+            <Button disabled={!isDisabled} onClick={() => setDisabled(false)}>
+              Edit
+            </Button>
+            {!isDisabled && (
+              <Button onClick={() => setDisabled(true)}>Cancel</Button>
+            )}
+            {!isDisabled && <Button type="submit">Save</Button>}
           </Box>
         </Flex>
       </Box>
     </form>
   );
+}
+
+export function CreateIssueForm() {
+  const navigate = useNavigate();
+  const createIssue: SubmitHandler<FieldValues> = async (data: FieldValues) => {
+    return issueService
+      .saveIssue(data)
+      .then((data) => {
+        navigate(ROUTES.ISSUE(data.id));
+      })
+      .catch(({ status }) => {
+        if (
+          status === HttpStatusCode.Forbidden ||
+          status === HttpStatusCode.Unauthorized
+        )
+          navigate(ROUTES.LOGIN);
+      });
+  };
+
+  return <EditableIssueDisplay onSubmit={createIssue} />;
 }
 
 export default EditableIssueDisplay;

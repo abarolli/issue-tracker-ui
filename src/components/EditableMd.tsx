@@ -19,9 +19,16 @@ interface EditableMdProps {
   height: ConditionalValue<string>;
   width: ConditionalValue<string>;
   register?: UseFormRegisterReturn<string>;
+  disable?: boolean;
 }
 
-const EditableMd = ({ content, height, width, register }: EditableMdProps) => {
+const EditableMd = ({
+  content,
+  height,
+  width,
+  register,
+  disable,
+}: EditableMdProps) => {
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(content);
 
@@ -37,7 +44,7 @@ const EditableMd = ({ content, height, width, register }: EditableMdProps) => {
     return parseHtmlToReact(sanitized);
   };
 
-  const startEditing = () => setEditing(true);
+  const startEditing = () => !disable && setEditing(true);
   const stopEditing = () => setEditing(false);
 
   const saveAndStopEditing = ({ value }: EditableValueChangeDetails) => {
