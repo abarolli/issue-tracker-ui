@@ -1,40 +1,41 @@
 import React, { useEffect, useState } from "react";
-import apiClient from "../services/api-client";
 import EditableIssueDisplay from "./IssueDisplay";
 import { useNavigate, useParams } from "react-router-dom";
 import ROUTES from "../configs/routes";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+import issueService from "../services/issue-service";
+import { HttpStatusCode } from "axios";
 
 function IssueRetriever() {
-  const { id } = useParams();
+  const id = Number.parseInt(useParams().id!);
   const [issue, setIssue] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    apiClient
-      .get(`/issues/${id}`, {
-        headers: { Authorization: `Bearer ${sessionStorage.getItem("jwt")}` },
-      })
-      .then(({ data }) => {
+    issueService
+      .getIssue(id)
+      .then((data) => {
         setIssue(data);
       })
       .catch(({ status }) => {
-        if (status === 403) navigate(ROUTES.LOGIN);
+        if (
+          status === HttpStatusCode.Forbidden ||
+          status === HttpStatusCode.Unauthorized
+        )
+          navigate(ROUTES.LOGIN);
       });
   }, []);
 
   const updateIssue: SubmitHandler<FieldValues> = (data: FieldValues) => {
-    apiClient
-      .patch(
-        `/issues/${id}`,
-        { ...data, assignees: [] },
-        {
-          headers: { Authorization: "Bearer " + sessionStorage.getItem("jwt") },
-        }
-      )
-      .then(({ data }) => console.log(data))
+    issueService
+      .updateIssue(id, data)
+      .then((data) => console.log(data))
       .catch(({ status }) => {
-        if (status === 403) navigate(ROUTES.LOGIN);
+        if (
+          status === HttpStatusCode.Forbidden ||
+          status === HttpStatusCode.Unauthorized
+        )
+          navigate(ROUTES.LOGIN);
       });
   };
 

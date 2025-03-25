@@ -17,9 +17,10 @@ import {
 import EditableMd from "./EditableMd";
 import SimpleSelectable, { SelectableItem } from "./SimpleSelectable";
 import SimpleEditable from "./SimpleEditable";
-import apiClient from "../services/api-client";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../configs/routes";
+import issueService from "../services/issue-service";
+import { HttpStatusCode } from "axios";
 
 interface IssueDisplayProps {
   title?: string;
@@ -149,19 +150,17 @@ function EditableIssueDisplay({
 export function CreateIssueForm() {
   const navigate = useNavigate();
   const createIssue: SubmitHandler<FieldValues> = async (data: FieldValues) => {
-    return await apiClient
-      .post(
-        "/issues",
-        { ...data, assignees: [] },
-        {
-          headers: { Authorization: "Bearer " + sessionStorage.getItem("jwt") },
-        }
-      )
-      .then(({ data }) => {
+    return issueService
+      .saveIssue(data)
+      .then((data) => {
         navigate(ROUTES.ISSUE(data.id));
       })
       .catch(({ status }) => {
-        if (status === 403) navigate(ROUTES.LOGIN);
+        if (
+          status === HttpStatusCode.Forbidden ||
+          status === HttpStatusCode.Unauthorized
+        )
+          navigate(ROUTES.LOGIN);
       });
   };
 
