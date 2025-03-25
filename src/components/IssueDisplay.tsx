@@ -28,6 +28,7 @@ interface IssueDisplayProps {
   priority?: string;
   assignees?: string[];
   disable?: boolean;
+  onSubmit: SubmitHandler<FieldValues>;
 }
 
 function EditableIssueDisplay({
@@ -37,9 +38,8 @@ function EditableIssueDisplay({
   priority,
   assignees,
   disable,
+  onSubmit,
 }: IssueDisplayProps) {
-  const navigate = useNavigate();
-
   var priorityItems = createListCollection<SelectableItem>({
     items: [
       { label: "LOW", value: "LOW" },
@@ -60,21 +60,6 @@ function EditableIssueDisplay({
 
   const { register, handleSubmit, control }: UseFormReturn = useForm();
 
-  const submitHandler: SubmitHandler<FieldValues> = (data: FieldValues) => {
-    apiClient
-      .post(
-        "/issues",
-        { ...data, assignees: assignees || [] },
-        {
-          headers: { Authorization: "Bearer " + sessionStorage.getItem("jwt") },
-        }
-      )
-      .then(({ data }) => console.log(data))
-      .catch(({ status }) => {
-        if (status === 403) navigate(ROUTES.LOGIN);
-      });
-  };
-
   const DEFAULT_STATUS = "OPEN",
     DEFAULT_PRIORITY = "LOW";
   title ??= "";
@@ -86,7 +71,7 @@ function EditableIssueDisplay({
   const [isDisabled, setDisabled] = useState(disable);
 
   return (
-    <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
+    <form onSubmit={handleSubmit(onSubmit)} className="issue-display">
       <Box maxW="1200px">
         <Box mb="2rem">
           <Text>Title</Text>
@@ -154,6 +139,26 @@ function EditableIssueDisplay({
       </Box>
     </form>
   );
+}
+
+export function CreateIssueForm() {
+  const navigate = useNavigate();
+  const createIssue: SubmitHandler<FieldValues> = async (data: FieldValues) => {
+    return await apiClient
+      .post(
+        "/issues",
+        { ...data, assignees: [] },
+        {
+          headers: { Authorization: "Bearer " + sessionStorage.getItem("jwt") },
+        }
+      )
+      .then(({ data }) => console.log(data))
+      .catch(({ status }) => {
+        if (status === 403) navigate(ROUTES.LOGIN);
+      });
+  };
+
+  return <EditableIssueDisplay onSubmit={createIssue} />;
 }
 
 export default EditableIssueDisplay;
