@@ -7,9 +7,10 @@ interface SearchSelectableProps {
   name: string;
   label: string;
   placeholder: string;
-  defaultValue: SelectableItem[];
-  collection: ListCollection<SelectableItem>;
+  defaultValue: (any & SelectableItem)[];
+  collection: ListCollection<any & SelectableItem>;
   control: Control<FieldValues>;
+  disable: boolean;
 }
 
 function SearchSelectable({
@@ -19,8 +20,11 @@ function SearchSelectable({
   defaultValue,
   placeholder,
   control,
+  disable,
 }: SearchSelectableProps) {
   const [searchTerm, setSearchTerm] = useState("");
+
+  disable ??= false;
 
   return (
     <Field.Root>
@@ -38,6 +42,7 @@ function SearchSelectable({
             }}
             multiple
             defaultValue={defaultValue.map((item) => item.value)}
+            disabled={disable}
           >
             <Select.HiddenSelect />
             <Select.Control>
