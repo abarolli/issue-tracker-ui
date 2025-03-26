@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CreateIssueForm } from "./components/IssueDisplay";
 import ROUTES from "./configs/routes";
 import IssueRetriever from "./components/IssueRetriever";
+import PrivateRoute from "./components/PrivateRoute";
 
 interface AppProps {
   className?: string;
@@ -17,8 +18,12 @@ function App({ className }: AppProps) {
       <Router>
         <Routes>
           <Route path={ROUTES.LOGIN} element={<LoginForm />} />
-          <Route path={ROUTES.CREATE_ISSUE} element={<CreateIssueForm />} />
-          <Route path="/issues/:id" element={<IssueRetriever />} />
+          <Route element={<PrivateRoute />}>
+            <Route path={ROUTES.CREATE_ISSUE} element={<CreateIssueForm />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/issues/:id" element={<IssueRetriever />} />
+          </Route>
         </Routes>
       </Router>
     </Box>
