@@ -3,7 +3,7 @@ import EditableIssueDisplay from "./IssueDisplay";
 import { useNavigate, useParams } from "react-router-dom";
 import ROUTES from "../configs/routes";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import issueService from "../services/issue-service";
+import IssueService from "../services/issue-service";
 import { HttpStatusCode } from "axios";
 
 type Issue = {
@@ -17,6 +17,7 @@ function IssueRetriever() {
   const id = Number.parseInt(useParams().id!);
   const [issue, setIssue] = useState<Issue | null>(null);
   const navigate = useNavigate();
+  const issueService = new IssueService();
 
   useEffect(() => {
     issueService
