@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useMemo, useState } from "react";
+import { useAsync } from "react-use";
 import {
   Box,
   Button,
@@ -19,15 +19,17 @@ import SimpleSelectable, { SelectableItem } from "./SimpleSelectable";
 import SimpleEditable from "./SimpleEditable";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../configs/routes";
-import issueService from "../services/issue-service";
+import IssueService from "../services/issue-service";
 import { HttpStatusCode } from "axios";
+import UserService from "../services/user-service";
+import SearchSelectable from "./SearchSelectable";
 
 interface IssueDisplayProps {
   title?: string;
   description?: string;
   status?: string;
   priority?: string;
-  assignees?: string[];
+  assignees?: ({ id: number } & SelectableItem)[];
   disable?: boolean;
   onSubmit: SubmitHandler<FieldValues>;
 }
@@ -59,6 +61,26 @@ function EditableIssueDisplay({
     ],
   });
 
+  const userService = new UserService();
+
+  const state = useAsync(async () => {
+    return userService.getUsers().then((data) =>
+      data.content.map((user: any) => ({
+        id: user.id,
+        label: user.username,
+        value: user.id.toString(),
+      }))
+    );
+  });
+
+  const userCollection = useMemo(
+    () =>
+      createListCollection({
+        items: state.value ?? [],
+      }),
+    [state.value]
+  );
+
   const { register, handleSubmit, control }: UseFormReturn = useForm();
 
   const DEFAULT_STATUS = "OPEN",
@@ -68,6 +90,7 @@ function EditableIssueDisplay({
   status ??= DEFAULT_STATUS;
   priority ??= DEFAULT_PRIORITY;
   disable ??= false;
+  assignees ??= [];
 
   const [isDisabled, setDisabled] = useState(disable);
 
@@ -133,6 +156,15 @@ function EditableIssueDisplay({
               collection={priorityItems}
               control={control}
             />
+            <SearchSelectable
+              disable={isDisabled}
+              label="Assignees"
+              name="assignees"
+              defaultValue={assignees}
+              collection={userCollection}
+              control={control}
+              placeholder="Search"
+            />
             <Button disabled={!isDisabled} onClick={() => setDisabled(false)}>
               Edit
             </Button>
@@ -149,6 +181,9 @@ function EditableIssueDisplay({
 
 export function CreateIssueForm() {
   const navigate = useNavigate();
+
+  const issueService = new IssueService();
+
   const createIssue: SubmitHandler<FieldValues> = async (data: FieldValues) => {
     return issueService
       .saveIssue(data)
