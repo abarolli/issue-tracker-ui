@@ -16,13 +16,9 @@ class IssueService {
 
   async saveIssue(data: any): Promise<any> {
     return apiClient
-      .post(
-        `${this.apiEndpoint}`,
-        { ...data, assignees: [] },
-        {
-          headers: this.headers,
-        }
-      )
+      .post(`${this.apiEndpoint}`, data, {
+        headers: this.headers,
+      })
       .then(({ data }) => data);
   }
 
