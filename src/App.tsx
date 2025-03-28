@@ -7,6 +7,7 @@ import { CreateIssueForm } from "./components/IssueDisplay";
 import ROUTES from "./configs/routes";
 import IssueRetriever from "./components/IssueRetriever";
 import PrivateRoute from "./components/PrivateRoute";
+import LoginPage from "./components/LoginPage";
 
 interface AppProps {
   className?: string;
@@ -17,7 +18,7 @@ function App({ className }: AppProps) {
     <Box className={className}>
       <Router>
         <Routes>
-          <Route path={ROUTES.LOGIN} element={<LoginForm />} />
+          <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route element={<PrivateRoute />}>
             <Route path={ROUTES.CREATE_ISSUE} element={<CreateIssueForm />} />
           </Route>
