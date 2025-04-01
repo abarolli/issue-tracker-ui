@@ -14,6 +14,18 @@ class IssueService {
       .then(({ data }) => data);
   }
 
+  async getIssues(page: number, size: number): Promise<any> {
+    return apiClient
+      .get(`${this.apiEndpoint}`, {
+        params: {
+          page,
+          size,
+        },
+        headers: this.headers,
+      })
+      .then(({ data }) => data);
+  }
+
   async saveIssue(data: any): Promise<any> {
     return apiClient
       .post(`${this.apiEndpoint}`, data, {
