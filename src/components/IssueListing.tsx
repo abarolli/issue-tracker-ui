@@ -140,26 +140,28 @@ function IssueListing() {
   return (
     <Stack>
       {/* fixing table layout so column width is determined by table width, not cell content */}
-      <Table.Root tableLayout="fixed" w="fit-content" showColumnBorder>
-        <ResizableTableHeader columns={columns} />
-        <Table.Body>
-          {issues.map((issue) => (
-            <Table.Row key={issue.id}>
-              <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                {issue.id}
-              </Table.Cell>
-              <Table.Cell>
-                <Text truncate>{issue.title}</Text>
-              </Table.Cell>
-              <Table.Cell>
-                <Text truncate>{issue.description}</Text>
-              </Table.Cell>
-              <Table.Cell>{issue.status}</Table.Cell>
-              <Table.Cell>{issue.priority}</Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+      <Table.ScrollArea>
+        <Table.Root tableLayout="fixed" w="fit-content" showColumnBorder>
+          <ResizableTableHeader columns={columns} />
+          <Table.Body>
+            {issues.map((issue) => (
+              <Table.Row key={issue.id}>
+                <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                  {issue.id}
+                </Table.Cell>
+                <Table.Cell>
+                  <Text truncate>{issue.title}</Text>
+                </Table.Cell>
+                <Table.Cell>
+                  <Text truncate>{issue.description}</Text>
+                </Table.Cell>
+                <Table.Cell>{issue.status}</Table.Cell>
+                <Table.Cell>{issue.priority}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollArea>
       {isLoading && (
         <Box pos="absolute" h="500px" w="full">
           <Center h="full">
