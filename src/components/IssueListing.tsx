@@ -21,16 +21,23 @@ type IssueResponseDto = {
   id: number;
 } & Issue;
 
-type TableColumn = { label: string; width: number };
+type TableColumn = {
+  name: string;
+  content: JSX.Element | string;
+  width: number;
+};
 
 interface ResizableTableHeaderProps {
   columns: TableColumn[];
 }
 
 function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
-  const [tableColumns, setTableColumns] = useState(columns);
+  const [columnWidths, setColumnWidths] = useState(
+    columns.map((column) => column.width)
+  );
+  const initialColumnWidths = useRef(columnWidths);
+  const cachedColumnContent = useRef(columns.map((column) => column.content));
   const [isResizing, setResizing] = useState(false);
-  const initialColumns = useRef(columns);
   const cursorPositionOnMouseDown = useRef<number | null>(null);
   const columnSelection = useRef<number | null>(null);
 
@@ -46,7 +53,7 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
   ) => {
     event.preventDefault();
     setResizing(true);
-    initialColumns.current = tableColumns;
+    initialColumnWidths.current = columnWidths;
     cursorPositionOnMouseDown.current = event.clientX;
     columnSelection.current = index;
     document.body.style.cursor = "ew-resize";
@@ -56,10 +63,10 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
     if (!isResizing) return;
     event.preventDefault();
     const widthChange = event.clientX - cursorPositionOnMouseDown.current!;
-    setTableColumns((columns) => {
-      const copy = _.cloneDeep(columns);
-      copy[columnSelection.current!].width =
-        initialColumns.current[columnSelection.current!].width + widthChange;
+    setColumnWidths((widths) => {
+      const copy = [...widths];
+      copy[columnSelection.current!] =
+        initialColumnWidths.current[columnSelection.current!] + widthChange;
       return copy;
     });
   };
@@ -79,9 +86,9 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
   return (
     <Table.Header>
       <Table.Row>
-        {tableColumns.map((column, index) => (
+        {columnWidths.map((width, index) => (
           <Table.ColumnHeader
-            w={`${column.width}px`}
+            w={`${width}px`}
             key={index}
             h="40px"
             padding={0}
@@ -95,7 +102,7 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
               alignItems="center"
               paddingLeft="10px"
             >
-              {column.label}
+              {cachedColumnContent.current[index]}
               <Box
                 w="2px"
                 h="100%"
@@ -113,6 +120,19 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
   );
 }
 
+interface ColumnHeaderContentProps {
+  label: string;
+  name: string;
+  onChevronClick: (name: string) => void;
+}
+function ColumnHeaderContent({
+  label,
+  name,
+  onChevronClick,
+}: ColumnHeaderContentProps) {
+  return <div style={{ backgroundColor: "blue" }}>{label}</div>;
+}
+
 function IssueListing() {
   const issueService = new IssueService();
   const [issues, setIssues] = useState<IssueResponseDto[]>([]);
@@ -121,11 +141,57 @@ function IssueListing() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const columns: TableColumn[] = [
-    { width: 50, label: "Id" },
-    { width: 200, label: "Title" },
-    { width: 200, label: "Description" },
-    { width: 100, label: "Status" },
-    { width: 100, label: "Priority" },
+    {
+      width: 50,
+      name: "id",
+      content: (
+        <ColumnHeaderContent label="Id" name="id" onChevronClick={() => {}} />
+      ),
+    },
+    {
+      width: 200,
+      name: "title",
+      content: (
+        <ColumnHeaderContent
+          label="Title"
+          name="title"
+          onChevronClick={() => {}}
+        />
+      ),
+    },
+    {
+      width: 200,
+      name: "description",
+      content: (
+        <ColumnHeaderContent
+          label="Description"
+          name="description"
+          onChevronClick={() => {}}
+        />
+      ),
+    },
+    {
+      width: 100,
+      name: "status",
+      content: (
+        <ColumnHeaderContent
+          label="Status"
+          name="status"
+          onChevronClick={() => {}}
+        />
+      ),
+    },
+    {
+      width: 100,
+      name: "priority",
+      content: (
+        <ColumnHeaderContent
+          label="Priority"
+          name="priority"
+          onChevronClick={() => {}}
+        />
+      ),
+    },
   ];
 
   useEffect(() => {
