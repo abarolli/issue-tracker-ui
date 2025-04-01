@@ -4,15 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import ROUTES from "../configs/routes";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import IssueService from "../services/issue-service";
+import { Issue } from "./util-types/Issue";
 import { HttpStatusCode } from "axios";
 
-type Issue = {
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-  assignees: { id: number; username: string }[];
-};
 function IssueRetriever() {
   const id = Number.parseInt(useParams().id!);
   const [issue, setIssue] = useState<Issue | null>(null);
