@@ -15,20 +15,26 @@ import _ from "lodash";
 
 import IssueService from "../services/issue-service";
 import { Issue } from "./util-types/Issue";
-import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import {
+  LuChevronDown,
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronsDownUp,
+  LuChevronUp,
+} from "react-icons/lu";
 
 type IssueResponseDto = {
   id: number;
 } & Issue;
 
-type TableColumn = {
+type ColumnHeader = {
   name: string;
   content: JSX.Element | string;
   width: number;
 };
 
 interface ResizableTableHeaderProps {
-  columns: TableColumn[];
+  columns: ColumnHeader[];
 }
 
 function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
@@ -36,7 +42,6 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
     columns.map((column) => column.width)
   );
   const initialColumnWidths = useRef(columnWidths);
-  const cachedColumnContent = useRef(columns.map((column) => column.content));
   const [isResizing, setResizing] = useState(false);
   const cursorPositionOnMouseDown = useRef<number | null>(null);
   const columnSelection = useRef<number | null>(null);
@@ -102,7 +107,7 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
               alignItems="center"
               paddingLeft="10px"
             >
-              {cachedColumnContent.current[index]}
+              {columns[index].content}
               <Box
                 w="2px"
                 h="100%"
@@ -120,18 +125,10 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
   );
 }
 
-interface ColumnHeaderContentProps {
-  label: string;
-  name: string;
-  onChevronClick: (name: string) => void;
-}
-function ColumnHeaderContent({
-  label,
-  name,
-  onChevronClick,
-}: ColumnHeaderContentProps) {
-  return <div style={{ backgroundColor: "blue" }}>{label}</div>;
-}
+type Sort = {
+  sortBy: string;
+  order: "asc" | "desc";
+};
 
 function IssueListing() {
   const issueService = new IssueService();
@@ -139,24 +136,65 @@ function IssueListing() {
   const [isLoading, setLoading] = useState(false);
   const pageSize = 10;
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<Sort>({ sortBy: "id", order: "asc" });
   const [totalCount, setTotalCount] = useState(0);
-  const columns: TableColumn[] = [
+
+  const handleColumnChevronClick = (name: string) => {
+    setSort((currentSort) => {
+      const copy = { ...currentSort };
+      if (currentSort.sortBy === name)
+        copy.order = currentSort.order === "asc" ? "desc" : "asc";
+      else {
+        copy.sortBy = name;
+        copy.order = "asc";
+      }
+      return copy;
+    });
+  };
+
+  interface ColumnHeaderContentProps {
+    label: string;
+    name: string;
+    sortable: boolean;
+  }
+
+  function ColumnHeaderContent({
+    label,
+    name,
+    sortable,
+  }: ColumnHeaderContentProps) {
+    const getChevron = () => {
+      if (!sortable) return;
+      if (sort.sortBy === name) {
+        return sort.order === "asc" ? (
+          <LuChevronUp onClick={() => handleColumnChevronClick(name)} />
+        ) : (
+          <LuChevronDown onClick={() => handleColumnChevronClick(name)} />
+        );
+      }
+      return (
+        <LuChevronsDownUp onClick={() => handleColumnChevronClick(name)} />
+      );
+    };
+    return (
+      <Stack direction="row" alignItems="center">
+        {label}
+        {getChevron()}
+      </Stack>
+    );
+  }
+
+  const columns: ColumnHeader[] = [
     {
       width: 50,
       name: "id",
-      content: (
-        <ColumnHeaderContent label="Id" name="id" onChevronClick={() => {}} />
-      ),
+      content: <ColumnHeaderContent label="Id" name="id" sortable={true} />,
     },
     {
       width: 200,
       name: "title",
       content: (
-        <ColumnHeaderContent
-          label="Title"
-          name="title"
-          onChevronClick={() => {}}
-        />
+        <ColumnHeaderContent label="Title" name="title" sortable={true} />
       ),
     },
     {
@@ -166,7 +204,7 @@ function IssueListing() {
         <ColumnHeaderContent
           label="Description"
           name="description"
-          onChevronClick={() => {}}
+          sortable={true}
         />
       ),
     },
@@ -174,11 +212,7 @@ function IssueListing() {
       width: 100,
       name: "status",
       content: (
-        <ColumnHeaderContent
-          label="Status"
-          name="status"
-          onChevronClick={() => {}}
-        />
+        <ColumnHeaderContent label="Status" name="status" sortable={false} />
       ),
     },
     {
@@ -188,7 +222,7 @@ function IssueListing() {
         <ColumnHeaderContent
           label="Priority"
           name="priority"
-          onChevronClick={() => {}}
+          sortable={false}
         />
       ),
     },
@@ -196,18 +230,26 @@ function IssueListing() {
 
   useEffect(() => {
     setLoading(true);
-    issueService.getIssues(page, pageSize).then((data) => {
-      setIssues(data.content);
-      setTotalCount(data.totalElements);
-      setLoading(false);
-    });
-  }, [page]);
+    issueService
+      .getIssues(page, pageSize, sort.sortBy, sort.order)
+      .then((data) => {
+        setIssues(data.content);
+        setTotalCount(data.totalElements);
+        setLoading(false);
+      });
+  }, [page, sort]);
 
   return (
     <Stack>
       {/* fixing table layout so column width is determined by table width, not cell content */}
       <Table.ScrollArea>
-        <Table.Root tableLayout="fixed" w="fit-content" showColumnBorder>
+        <Table.Root
+          tableLayout="fixed"
+          w="fit-content"
+          variant="outline"
+          showColumnBorder
+          interactive
+        >
           <ResizableTableHeader columns={columns} />
           <Table.Body>
             {issues.map((issue) => (
