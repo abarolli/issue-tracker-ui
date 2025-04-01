@@ -100,7 +100,7 @@ function EditableIssueDisplay({
   };
 
   return (
-    <form onSubmit={handleSubmit(submitHandler)} className="issue-display">
+    <form onSubmit={handleSubmit(submitHandler)}>
       <Box maxW="1200px">
         <Box mb="2rem">
           <Text>Title</Text>
