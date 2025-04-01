@@ -24,10 +24,24 @@ function App({ className }: AppProps) {
             <Route path={ROUTES.ISSUES} element={<IssueListingPage />} />
           </Route>
           <Route element={<PrivateRoute />}>
-            <Route path={ROUTES.CREATE_ISSUE} element={<CreateIssueForm />} />
+            <Route
+              path={ROUTES.CREATE_ISSUE}
+              element={
+                <div className="issue-display--page">
+                  <CreateIssueForm />
+                </div>
+              }
+            />
           </Route>
           <Route element={<PrivateRoute />}>
-            <Route path="/issues/:id" element={<IssueRetriever />} />
+            <Route
+              path="/issues/:id"
+              element={
+                <div className="issue-display--page">
+                  <IssueRetriever />
+                </div>
+              }
+            />
           </Route>
         </Routes>
       </Router>
