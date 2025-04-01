@@ -14,12 +14,19 @@ class IssueService {
       .then(({ data }) => data);
   }
 
-  async getIssues(page: number, size: number): Promise<any> {
+  async getIssues(
+    page: number,
+    size: number,
+    sortBy: string,
+    order: string
+  ): Promise<any> {
     return apiClient
       .get(`${this.apiEndpoint}`, {
         params: {
           page,
           size,
+          sortBy,
+          order,
         },
         headers: this.headers,
       })
