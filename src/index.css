@@ -64,3 +64,7 @@
   background-color: rgba(0, 0, 0, 0.1);
   padding: 0 1rem;
 }
+
+.table-header_draggable:hover {
+  cursor: ew-resize;
+}
