@@ -22,6 +22,7 @@ import {
   LuChevronsDownUp,
   LuChevronUp,
 } from "react-icons/lu";
+import IssueRetriever from "./IssueRetriever";
 
 type IssueResponseDto = {
   id: number;
@@ -138,6 +139,7 @@ function IssueListing() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<Sort>({ sortBy: "id", order: "asc" });
   const [totalCount, setTotalCount] = useState(0);
+  const [selection, setSelection] = useState<number | null>(null);
 
   const handleColumnChevronClick = (name: string) => {
     setSort((currentSort) => {
@@ -239,74 +241,83 @@ function IssueListing() {
       });
   }, [page, sort]);
 
+  const getIssue = (id: number) => {
+    setSelection(id);
+  };
+
   return (
     <Stack>
-      {/* fixing table layout so column width is determined by table width, not cell content */}
-      <Table.ScrollArea>
-        <Table.Root
-          tableLayout="fixed"
-          w="fit-content"
-          variant="outline"
-          showColumnBorder
-          interactive
-        >
-          <ResizableTableHeader columns={columns} />
-          <Table.Body>
-            {issues.map((issue) => (
-              <Table.Row key={issue.id}>
-                <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                  {issue.id}
-                </Table.Cell>
-                <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                  <Text truncate>{issue.title}</Text>
-                </Table.Cell>
-                <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                  <Text truncate>{issue.description}</Text>
-                </Table.Cell>
-                <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                  {issue.status}
-                </Table.Cell>
-                <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                  {issue.priority}
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Root>
-      </Table.ScrollArea>
-      {isLoading && (
-        <Box pos="absolute" h="500px" w="full">
-          <Center h="full">
-            <Spinner />
-          </Center>
+      <Stack>
+        {/* fixing table layout so column width is determined by table width, not cell content */}
+        <Table.ScrollArea>
+          <Table.Root
+            tableLayout="fixed"
+            w="fit-content"
+            variant="outline"
+            showColumnBorder
+            interactive
+          >
+            <ResizableTableHeader columns={columns} />
+            <Table.Body>
+              {issues.map((issue) => (
+                <Table.Row key={issue.id} onClick={() => getIssue(issue.id)}>
+                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                    {issue.id}
+                  </Table.Cell>
+                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                    <Text truncate>{issue.title}</Text>
+                  </Table.Cell>
+                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                    <Text truncate>{issue.description}</Text>
+                  </Table.Cell>
+                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                    {issue.status}
+                  </Table.Cell>
+                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                    {issue.priority}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollArea>
+        {isLoading && (
+          <Box pos="absolute" h="500px" w="full">
+            <Center h="full">
+              <Spinner />
+            </Center>
+          </Box>
+        )}
+        <Pagination.Root count={totalCount} pageSize={pageSize} page={page}>
+          <ButtonGroup variant="ghost" size="sm">
+            <Pagination.PrevTrigger asChild>
+              <IconButton onClick={() => setPage((page) => page - 1)}>
+                <LuChevronLeft />
+              </IconButton>
+            </Pagination.PrevTrigger>
+            <Pagination.Items
+              render={(page) => (
+                <IconButton
+                  variant={{ base: "ghost", _selected: "outline" }}
+                  onClick={() => setPage(page.value)}
+                >
+                  {page.value}
+                </IconButton>
+              )}
+            />
+            <Pagination.NextTrigger asChild>
+              <IconButton onClick={() => setPage((page) => page + 1)}>
+                <LuChevronRight />
+              </IconButton>
+            </Pagination.NextTrigger>
+          </ButtonGroup>
+        </Pagination.Root>
+      </Stack>
+      {selection && (
+        <Box w="100vw">
+          <IssueRetriever key={selection} id={selection} />
         </Box>
       )}
-      <Pagination.Root count={totalCount} pageSize={pageSize} page={page}>
-        <ButtonGroup variant="ghost" size="sm">
-          <Pagination.PrevTrigger asChild>
-            <IconButton onClick={() => setPage((page) => page - 1)}>
-              <LuChevronLeft />
-            </IconButton>
-          </Pagination.PrevTrigger>
-
-          <Pagination.Items
-            render={(page) => (
-              <IconButton
-                variant={{ base: "ghost", _selected: "outline" }}
-                onClick={() => setPage(page.value)}
-              >
-                {page.value}
-              </IconButton>
-            )}
-          />
-
-          <Pagination.NextTrigger asChild>
-            <IconButton onClick={() => setPage((page) => page + 1)}>
-              <LuChevronRight />
-            </IconButton>
-          </Pagination.NextTrigger>
-        </ButtonGroup>
-      </Pagination.Root>
     </Stack>
   );
 }
