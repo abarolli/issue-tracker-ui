@@ -215,14 +215,18 @@ function IssueListing() {
                 <Table.Cell whiteSpace="nowrap" overflow="hidden">
                   {issue.id}
                 </Table.Cell>
-                <Table.Cell>
+                <Table.Cell whiteSpace="nowrap" overflow="hidden">
                   <Text truncate>{issue.title}</Text>
                 </Table.Cell>
-                <Table.Cell>
+                <Table.Cell whiteSpace="nowrap" overflow="hidden">
                   <Text truncate>{issue.description}</Text>
                 </Table.Cell>
-                <Table.Cell>{issue.status}</Table.Cell>
-                <Table.Cell>{issue.priority}</Table.Cell>
+                <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                  {issue.status}
+                </Table.Cell>
+                <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                  {issue.priority}
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
