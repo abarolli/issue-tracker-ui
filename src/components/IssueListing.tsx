@@ -330,17 +330,26 @@ function IssueListing() {
             overflowY="auto"
             padding="20px"
           >
-            <Button
+            <Stack
+              w="fit-content"
               position="sticky"
               top="0"
               left="100%"
               zIndex="max"
-              bgColor="rgba(0, 0, 0, 0.1)"
-              size="xs"
-              onClick={() => navigate(routes.ISSUE(selection))}
+              alignItems="end"
             >
-              Full View
-            </Button>
+              <Text fontSize="xs" color="lightgrey">
+                Issue #{selection}
+              </Text>
+              <Button
+                bgColor="rgba(0, 0, 0, 0.1)"
+                size="xs"
+                onClick={() => navigate(routes.ISSUE(selection))}
+                w="fit-content"
+              >
+                Full View
+              </Button>
+            </Stack>
             <IssueRetriever key={selection} id={selection} />
           </Box>
         )}
