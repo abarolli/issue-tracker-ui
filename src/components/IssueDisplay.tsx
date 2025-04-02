@@ -101,80 +101,84 @@ function EditableIssueDisplay({
 
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <Box maxW="1200px">
-        <Box mb="2rem">
-          <Text>Title</Text>
-          <SimpleEditable
+      <Box mb="2rem">
+        <Text>Title</Text>
+        <SimpleEditable
+          disable={isDisabled}
+          register={register("title")}
+          content={title}
+          fontSize="lg"
+          previewClassName="issue-display_title"
+        />
+      </Box>
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        rowGap="1.3rem"
+        css={{
+          "@container (max-width: 500px)": {
+            flexDirection: "column !important",
+            alignItems: "center !important",
+          },
+        }}
+        md={{ flexDirection: "row", columnGap: "1.3rem", alignItems: "start" }}
+      >
+        <Box w="100%">
+          <Text fontWeight="500" lineHeight="1.25rem" mb=".375rem">
+            Description
+          </Text>
+          <EditableMd
             disable={isDisabled}
-            register={register("title")}
-            content={title}
-            fontSize="lg"
-            previewClassName="issue-display_title"
+            register={register("description")}
+            height="sm"
+            width="100%"
+            content={description}
           />
         </Box>
-        <Flex
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          md={{ flexDirection: "row", alignItems: "start" }}
+        <Box
+          css={{
+            "@container (max-width: 500px)": {
+              w: "100%",
+            },
+          }}
+          w={{ base: "100%", md: "200px" }}
+          className="issue-display_control"
         >
-          <Box mb="1.3rem" md={{ mr: "1.3rem" }}>
-            <Text fontWeight="500" lineHeight="1.25rem" mb=".375rem">
-              Description
-            </Text>
-            <EditableMd
-              disable={isDisabled}
-              register={register("description")}
-              height="sm"
-              width={{
-                base: "sm",
-                sm: "md",
-                largeSmall: "lg",
-                lg: "xl",
-                xl: "2xl",
-              }}
-              content={description}
-            />
-          </Box>
-          <Box
-            w={{ base: "100%", md: "200px" }}
-            className="issue-display_control"
-          >
-            <SimpleSelectable
-              disable={isDisabled}
-              label="Status"
-              name="status"
-              defaultValue={status}
-              collection={statusItems}
-              control={control}
-            />
-            <SimpleSelectable
-              disable={isDisabled}
-              label="Priority"
-              name="priority"
-              defaultValue={priority}
-              collection={priorityItems}
-              control={control}
-            />
-            <SearchSelectable
-              disable={isDisabled}
-              label="Assignees"
-              name="assignees"
-              defaultValue={assignees}
-              collection={userCollection}
-              control={control}
-              placeholder="Search"
-            />
-            <Button disabled={!isDisabled} onClick={() => setDisabled(false)}>
-              Edit
-            </Button>
-            {!isDisabled && (
-              <Button onClick={() => setDisabled(true)}>Cancel</Button>
-            )}
-            {!isDisabled && <Button type="submit">Save</Button>}
-          </Box>
-        </Flex>
-      </Box>
+          <SimpleSelectable
+            disable={isDisabled}
+            label="Status"
+            name="status"
+            defaultValue={status}
+            collection={statusItems}
+            control={control}
+          />
+          <SimpleSelectable
+            disable={isDisabled}
+            label="Priority"
+            name="priority"
+            defaultValue={priority}
+            collection={priorityItems}
+            control={control}
+          />
+          <SearchSelectable
+            disable={isDisabled}
+            label="Assignees"
+            name="assignees"
+            defaultValue={assignees}
+            collection={userCollection}
+            control={control}
+            placeholder="Search"
+          />
+          <Button disabled={!isDisabled} onClick={() => setDisabled(false)}>
+            Edit
+          </Button>
+          {!isDisabled && (
+            <Button onClick={() => setDisabled(true)}>Cancel</Button>
+          )}
+          {!isDisabled && <Button type="submit">Save</Button>}
+        </Box>
+      </Flex>
     </form>
   );
 }
