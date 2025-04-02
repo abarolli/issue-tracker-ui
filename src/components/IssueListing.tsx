@@ -9,6 +9,7 @@ import {
   IconButton,
   Text,
   Heading,
+  Button,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -22,8 +23,12 @@ import {
   LuChevronRight,
   LuChevronsDownUp,
   LuChevronUp,
+  LuExternalLink,
+  LuNavigation,
 } from "react-icons/lu";
 import IssueRetriever from "./IssueRetriever";
+import { useNavigate } from "react-router-dom";
+import routes from "../configs/routes";
 
 type IssueResponseDto = {
   id: number;
@@ -141,6 +146,7 @@ function IssueListing() {
   const [sort, setSort] = useState<Sort>({ sortBy: "id", order: "asc" });
   const [totalCount, setTotalCount] = useState(0);
   const [selection, setSelection] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   const handleColumnChevronClick = (name: string) => {
     setSort((currentSort) => {
@@ -324,6 +330,17 @@ function IssueListing() {
             overflowY="auto"
             padding="20px"
           >
+            <Button
+              position="sticky"
+              top="0"
+              left="100%"
+              zIndex="max"
+              bgColor="rgba(0, 0, 0, 0.1)"
+              size="xs"
+              onClick={() => navigate(routes.ISSUE(selection))}
+            >
+              Full View
+            </Button>
             <IssueRetriever key={selection} id={selection} />
           </Box>
         )}
