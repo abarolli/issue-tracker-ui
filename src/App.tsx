@@ -27,8 +27,10 @@ function App({ className }: AppProps) {
             <Route
               path={ROUTES.CREATE_ISSUE}
               element={
-                <div className="issue-display--page">
-                  <CreateIssueForm />
+                <div className="issue-display__page">
+                  <div className="issue-display__container">
+                    <CreateIssueForm />
+                  </div>
                 </div>
               }
             />
@@ -37,8 +39,10 @@ function App({ className }: AppProps) {
             <Route
               path="/issues/:id"
               element={
-                <div className="issue-display--page">
-                  <IssueRetriever />
+                <div className="issue-display__page">
+                  <div className="issue-display__container">
+                    <IssueRetriever />
+                  </div>
                 </div>
               }
             />

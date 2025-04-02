@@ -45,10 +45,14 @@
 }
 
 .issue-display__container {
-  max-width: 490px;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .issue-display__page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 2rem;
 }
 
