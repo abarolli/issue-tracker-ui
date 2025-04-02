@@ -202,14 +202,14 @@ function IssueListing() {
       content: <ColumnHeaderContent label="Id" name="id" sortable={true} />,
     },
     {
-      width: 200,
+      width: 150,
       name: "title",
       content: (
         <ColumnHeaderContent label="Title" name="title" sortable={true} />
       ),
     },
     {
-      width: 200,
+      width: 250,
       name: "description",
       content: (
         <ColumnHeaderContent
@@ -220,14 +220,14 @@ function IssueListing() {
       ),
     },
     {
-      width: 100,
+      width: 120,
       name: "status",
       content: (
         <ColumnHeaderContent label="Status" name="status" sortable={false} />
       ),
     },
     {
-      width: 100,
+      width: 120,
       name: "priority",
       content: (
         <ColumnHeaderContent
