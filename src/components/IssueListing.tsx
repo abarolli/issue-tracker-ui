@@ -10,6 +10,7 @@ import {
   Text,
   Heading,
   Button,
+  createListCollection,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -31,6 +32,8 @@ import { useNavigate } from "react-router-dom";
 import routes from "../configs/routes";
 import Status from "./Status";
 import Priority from "./Priority";
+import SimpleSelectable, { SelectableItem } from "./SimpleSelectable";
+import { useForm } from "react-hook-form";
 
 type IssueResponseDto = {
   id: number;
@@ -109,17 +112,18 @@ function ResizableTableHeader({ columns }: ResizableTableHeaderProps) {
             overflow="hidden"
           >
             <Box
-              w="100%"
               h="100%"
               display="flex"
-              justifyContent="space-between"
               alignItems="center"
               paddingLeft="10px"
+              position="relative"
             >
               {columns[index].content}
               <Box
                 w="2px"
                 h="100%"
+                position="absolute"
+                right="0"
                 bgColor={
                   isResizing && columnSelection.current === index ? "aqua" : ""
                 }
@@ -149,6 +153,7 @@ function IssueListing() {
   const [totalCount, setTotalCount] = useState(0);
   const [selection, setSelection] = useState<number | null>(null);
   const navigate = useNavigate();
+  const { control } = useForm();
 
   const handleColumnChevronClick = (name: string) => {
     setSort((currentSort) => {
@@ -163,16 +168,36 @@ function IssueListing() {
     });
   };
 
+  var priorityItems = createListCollection<SelectableItem>({
+    items: [
+      { label: "LOW", value: "LOW" },
+      { label: "MEDIUM", value: "MEDIUM" },
+      { label: "HIGH", value: "HIGH" },
+      { label: "CRITICAL", value: "CRITICAL" },
+    ],
+  });
+
+  var statusItems = createListCollection<SelectableItem>({
+    items: [
+      { label: "OPEN", value: "OPEN" },
+      { label: "IN PROGRESS", value: "IN_PROGRESS" },
+      { label: "RESOLVED", value: "RESOLVED" },
+      { label: "CLOSED", value: "CLOSED" },
+    ],
+  });
+
   interface ColumnHeaderContentProps {
     label: string;
     name: string;
     sortable: boolean;
+    filterComponent: JSX.Element;
   }
 
   function ColumnHeaderContent({
     label,
     name,
     sortable,
+    filterComponent,
   }: ColumnHeaderContentProps) {
     const getChevron = () => {
       if (!sortable) return;
@@ -187,10 +212,14 @@ function IssueListing() {
         <LuChevronsDownUp onClick={() => handleColumnChevronClick(name)} />
       );
     };
+
     return (
-      <Stack direction="row" alignItems="center">
-        {label}
-        {getChevron()}
+      <Stack>
+        <Stack direction="row" alignItems="center">
+          {label}
+          {getChevron()}
+        </Stack>
+        {filterComponent}
       </Stack>
     );
   }
@@ -199,13 +228,25 @@ function IssueListing() {
     {
       width: 50,
       name: "id",
-      content: <ColumnHeaderContent label="Id" name="id" sortable={true} />,
+      content: (
+        <ColumnHeaderContent
+          label="Id"
+          name="id"
+          sortable={true}
+          filterComponent={<Box></Box>}
+        />
+      ),
     },
     {
       width: 150,
       name: "title",
       content: (
-        <ColumnHeaderContent label="Title" name="title" sortable={true} />
+        <ColumnHeaderContent
+          label="Title"
+          name="title"
+          sortable={true}
+          filterComponent={<Box></Box>}
+        />
       ),
     },
     {
@@ -216,6 +257,7 @@ function IssueListing() {
           label="Description"
           name="description"
           sortable={true}
+          filterComponent={<Box></Box>}
         />
       ),
     },
@@ -223,7 +265,20 @@ function IssueListing() {
       width: 120,
       name: "status",
       content: (
-        <ColumnHeaderContent label="Status" name="status" sortable={false} />
+        <ColumnHeaderContent
+          label="Status"
+          name="status"
+          sortable={false}
+          filterComponent={
+            <Box w="6rem">
+              <SimpleSelectable
+                name="id"
+                collection={statusItems}
+                control={control}
+              />
+            </Box>
+          }
+        />
       ),
     },
     {
@@ -234,6 +289,15 @@ function IssueListing() {
           label="Priority"
           name="priority"
           sortable={false}
+          filterComponent={
+            <Box w="6rem">
+              <SimpleSelectable
+                name="id"
+                collection={priorityItems}
+                control={control}
+              />
+            </Box>
+          }
         />
       ),
     },
