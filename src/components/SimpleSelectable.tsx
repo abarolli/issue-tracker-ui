@@ -1,18 +1,18 @@
 import React from "react";
 
 import { Control, Controller, FieldValues } from "react-hook-form";
-import { Field, ListCollection, Select } from "@chakra-ui/react";
+import { Field, ListCollection, Portal, Select } from "@chakra-ui/react";
 
 export type SelectableItem = { label: string; value: string };
 
 interface SimpleSelectableProps {
-  label: string;
   name: string;
   collection: ListCollection<SelectableItem>;
+  control: Control<FieldValues>;
+  label?: string;
   placeholder?: string;
   defaultValue?: string;
   disable?: boolean;
-  control?: Control<FieldValues>;
 }
 
 function SimpleSelectable({
@@ -28,7 +28,7 @@ function SimpleSelectable({
 
   return (
     <Field.Root>
-      <Field.Label>{label}</Field.Label>
+      {label && <Field.Label>{label}</Field.Label>}
       <Controller
         control={control}
         name={name}
@@ -50,16 +50,18 @@ function SimpleSelectable({
                 <Select.Indicator />
               </Select.IndicatorGroup>
             </Select.Control>
-            <Select.Positioner>
-              <Select.Content>
-                {collection.items.map((item) => (
-                  <Select.Item item={item} key={item.value}>
-                    {item.label}
-                    <Select.ItemIndicator />
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Positioner>
+            <Portal>
+              <Select.Positioner>
+                <Select.Content>
+                  {collection.items.map((item) => (
+                    <Select.Item item={item} key={item.value}>
+                      {item.label}
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Portal>
           </Select.Root>
         )}
       />
