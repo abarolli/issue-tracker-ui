@@ -8,6 +8,7 @@ import {
   Table,
   IconButton,
   Text,
+  Heading,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -247,77 +248,86 @@ function IssueListing() {
 
   return (
     <Stack>
-      <Stack>
-        {/* fixing table layout so column width is determined by table width, not cell content */}
-        <Table.ScrollArea>
-          <Table.Root
-            tableLayout="fixed"
-            w="fit-content"
-            variant="outline"
-            showColumnBorder
-            interactive
+      <Heading>Issues</Heading>
+      {/* fixing table layout so column width is determined by table width, not cell content */}
+      <Stack direction={{ base: "column", md: "row" }}>
+        <Stack w={{ base: "100%", md: "sm", lg: "auto" }}>
+          <Table.ScrollArea>
+            <Table.Root
+              tableLayout="fixed"
+              w="fit-content"
+              variant="outline"
+              showColumnBorder
+              interactive
+            >
+              <ResizableTableHeader columns={columns} />
+              <Table.Body>
+                {issues.map((issue) => (
+                  <Table.Row key={issue.id} onClick={() => getIssue(issue.id)}>
+                    <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                      {issue.id}
+                    </Table.Cell>
+                    <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                      <Text truncate>{issue.title}</Text>
+                    </Table.Cell>
+                    <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                      <Text truncate>{issue.description}</Text>
+                    </Table.Cell>
+                    <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                      {issue.status}
+                    </Table.Cell>
+                    <Table.Cell whiteSpace="nowrap" overflow="hidden">
+                      {issue.priority}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Root>
+          </Table.ScrollArea>
+          {isLoading && (
+            <Box pos="absolute" h="500px" w="full">
+              <Center h="full">
+                <Spinner />
+              </Center>
+            </Box>
+          )}
+          <Pagination.Root count={totalCount} pageSize={pageSize} page={page}>
+            <ButtonGroup variant="ghost" size="sm">
+              <Pagination.PrevTrigger asChild>
+                <IconButton onClick={() => setPage((page) => page - 1)}>
+                  <LuChevronLeft />
+                </IconButton>
+              </Pagination.PrevTrigger>
+              <Pagination.Items
+                render={(page) => (
+                  <IconButton
+                    variant={{ base: "ghost", _selected: "outline" }}
+                    onClick={() => setPage(page.value)}
+                  >
+                    {page.value}
+                  </IconButton>
+                )}
+              />
+              <Pagination.NextTrigger asChild>
+                <IconButton onClick={() => setPage((page) => page + 1)}>
+                  <LuChevronRight />
+                </IconButton>
+              </Pagination.NextTrigger>
+            </ButtonGroup>
+          </Pagination.Root>
+        </Stack>
+        {selection && (
+          <Box
+            css={{ containerType: "inline-size" }}
+            w={{ base: "100%", md: "499px" }}
+            h="lg"
+            overflowY="auto"
+            padding="20px"
           >
-            <ResizableTableHeader columns={columns} />
-            <Table.Body>
-              {issues.map((issue) => (
-                <Table.Row key={issue.id} onClick={() => getIssue(issue.id)}>
-                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                    {issue.id}
-                  </Table.Cell>
-                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                    <Text truncate>{issue.title}</Text>
-                  </Table.Cell>
-                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                    <Text truncate>{issue.description}</Text>
-                  </Table.Cell>
-                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                    {issue.status}
-                  </Table.Cell>
-                  <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                    {issue.priority}
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table.Root>
-        </Table.ScrollArea>
-        {isLoading && (
-          <Box pos="absolute" h="500px" w="full">
-            <Center h="full">
-              <Spinner />
-            </Center>
+            <IssueRetriever key={selection} id={selection} />
           </Box>
         )}
-        <Pagination.Root count={totalCount} pageSize={pageSize} page={page}>
-          <ButtonGroup variant="ghost" size="sm">
-            <Pagination.PrevTrigger asChild>
-              <IconButton onClick={() => setPage((page) => page - 1)}>
-                <LuChevronLeft />
-              </IconButton>
-            </Pagination.PrevTrigger>
-            <Pagination.Items
-              render={(page) => (
-                <IconButton
-                  variant={{ base: "ghost", _selected: "outline" }}
-                  onClick={() => setPage(page.value)}
-                >
-                  {page.value}
-                </IconButton>
-              )}
-            />
-            <Pagination.NextTrigger asChild>
-              <IconButton onClick={() => setPage((page) => page + 1)}>
-                <LuChevronRight />
-              </IconButton>
-            </Pagination.NextTrigger>
-          </ButtonGroup>
-        </Pagination.Root>
       </Stack>
-      {selection && (
-        <Box w="100vw">
-          <IssueRetriever key={selection} id={selection} />
-        </Box>
-      )}
     </Stack>
   );
 }
