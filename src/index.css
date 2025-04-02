@@ -44,9 +44,11 @@
   text-decoration: underline;
 }
 
-.issue-display--page {
-  display: flex;
-  justify-content: center;
+.issue-display__container {
+  max-width: 490px;
+}
+
+.issue-display__page {
   padding: 2rem;
 }
 
