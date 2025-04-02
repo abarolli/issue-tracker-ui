@@ -1,12 +1,13 @@
 import React from "react";
 import IssueListing from "./IssueListing";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
+import IssueRetriever from "./IssueRetriever";
 
 function IssueListingPage() {
   return (
-    <div>
+    <Box padding="3rem">
       <IssueListing />
-    </div>
+    </Box>
   );
 }
 
