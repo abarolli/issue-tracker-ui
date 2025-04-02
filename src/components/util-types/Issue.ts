@@ -7,3 +7,4 @@ export type Issue = {
 };
 
 export type StatusType = "OPEN" | "IN_PROGRESS" | "CLOSED" | "RESOLVED";
+export type PriorityType = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";

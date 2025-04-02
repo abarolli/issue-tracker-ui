@@ -16,7 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 import _ from "lodash";
 
 import IssueService from "../services/issue-service";
-import { Issue, StatusType } from "./util-types/Issue";
+import { Issue, PriorityType, StatusType } from "./util-types/Issue";
 import {
   LuChevronDown,
   LuChevronLeft,
@@ -30,6 +30,7 @@ import IssueRetriever from "./IssueRetriever";
 import { useNavigate } from "react-router-dom";
 import routes from "../configs/routes";
 import Status from "./Status";
+import Priority from "./Priority";
 
 type IssueResponseDto = {
   id: number;
@@ -284,7 +285,7 @@ function IssueListing() {
                       <Status status={issue.status as StatusType} />
                     </Table.Cell>
                     <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                      {issue.priority}
+                      <Priority priority={issue.priority as PriorityType} />
                     </Table.Cell>
                   </Table.Row>
                 ))}
