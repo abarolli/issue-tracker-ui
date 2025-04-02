@@ -16,7 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 import _ from "lodash";
 
 import IssueService from "../services/issue-service";
-import { Issue } from "./util-types/Issue";
+import { Issue, StatusType } from "./util-types/Issue";
 import {
   LuChevronDown,
   LuChevronLeft,
@@ -29,6 +29,7 @@ import {
 import IssueRetriever from "./IssueRetriever";
 import { useNavigate } from "react-router-dom";
 import routes from "../configs/routes";
+import Status from "./Status";
 
 type IssueResponseDto = {
   id: number;
@@ -257,7 +258,7 @@ function IssueListing() {
       <Heading>Issues</Heading>
       {/* fixing table layout so column width is determined by table width, not cell content */}
       <Stack direction={{ base: "column", md: "row" }}>
-        <Stack w={{ base: "100%", md: "sm", lg: "auto" }}>
+        <Stack maxW="920px" w={{ base: "100%", md: "sm", lg: "auto" }}>
           <Table.ScrollArea>
             <Table.Root
               tableLayout="fixed"
@@ -280,7 +281,7 @@ function IssueListing() {
                       <Text truncate>{issue.description}</Text>
                     </Table.Cell>
                     <Table.Cell whiteSpace="nowrap" overflow="hidden">
-                      {issue.status}
+                      <Status status={issue.status as StatusType} />
                     </Table.Cell>
                     <Table.Cell whiteSpace="nowrap" overflow="hidden">
                       {issue.priority}
